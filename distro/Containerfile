@@ -1,4 +1,4 @@
 FROM quay.io/fedora/fedora-bootc:41
-RUN dnf -y install mkpasswd neofetch nethack
+RUN dnf -y install mkpasswd
 RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 thepassword) && useradd -m -G wheel bootc-user -p $pass
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
