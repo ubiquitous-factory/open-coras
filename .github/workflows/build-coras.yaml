@@ -6,7 +6,6 @@ on:
       - 'distro/**'
     branches:
       - main
-
 jobs:
  
   build:
