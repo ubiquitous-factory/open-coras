@@ -15,7 +15,11 @@ jobs:
     env:
       IMAGE_NAME: open-coras
       REGISTRY: ghcr.io/mehal-tech
-   
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
     steps:
       - name: Delete huge unnecessary tools folder
         run: rm -rf /opt/hostedtoolcache
