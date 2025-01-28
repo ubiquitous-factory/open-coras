@@ -3,20 +3,19 @@ A bootc based linux distribution by Mehal Technologies.
 
 This distribution is intended for developers interested in investigating gitops in a bootc environment.
 
-Out of the box it supports gitops scenarios where the deployment configuration is also open. 
+Out of the box it supports gitops scenarios where the deployment configuration is also open but can be used to test the [Mehal Technology Services](https://mehal.tech). 
 
-If more private repositories and/or complex deployments such as canary releases are required it's suggested you integrate this distribution with [CLOS](https://clos.mehal.tech).
+If more private repositories and/or complex deployments such as canary releases are required it's suggested you integrate this distribution with [CLOS](https://docs.mehal.tech/clos).
 
-For a supported version of this image please visit - [Mehal Technologies](https://mehal.technologies/coras)
+For a supported version of this image please visit - [Mehal Technologies](https://docs.mehal.tech/coras)
 
 # usage 
 
-Please see https://clos.mehal.tech/docs/gettingstarted
+Please see https://docs.mehal.tech/coras
 
 # notes
 
 The user name and password for this image is `bootcer` with `thepassword`. It's obviously recommended that the `bootcer` user is deleted as part of the downstream build. 
 
-For a more robust security posture consider using the supported coras distribution. 
-
+For a more robust security posture consider using the supported coras distribution.
 
