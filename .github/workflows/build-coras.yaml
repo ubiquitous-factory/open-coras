@@ -4,8 +4,6 @@ on:
   push:
     paths:
       - 'distro/**'
-    paths-ignore:
-      - "**.md"
     branches:
       - main
 jobs:
