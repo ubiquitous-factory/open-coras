@@ -7,5 +7,5 @@ RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 thepassword) && useradd -m -G
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
 # Install amrite for wasi support
 COPY --from=crunbuild /vendor/fedora_41/libwasmedge.so.0 /usr/local/lib64/libwasmedge.so.0 
-COPY --from=crunbuild /vendor/crun-wasmedge /usr/bin/crun
+COPY --from=crunbuild /vendor/fedora_41/crun-wasmedge /usr/bin/crun
 

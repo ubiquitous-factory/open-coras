@@ -3,7 +3,8 @@ A bootc based linux distribution by Mehal Technologies.
 
 This distribution is intended for developers interested in investigating gitops in a bootc environment.
 
-Out of the box it supports gitops scenarios where the deployment configuration is also open but can be used to test the [Mehal Technology Services](https://mehal.tech). 
+Out of the box it supports many [open gitops scenarios](https://docs.mehal.tech/tutorials). 
+
 
 If more private repositories and/or complex deployments such as canary releases are required it's suggested you integrate this distribution with [CLOS](https://docs.mehal.tech/clos).
 
