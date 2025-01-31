@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./distro
+        working-directory: distro
     env:
       IMAGE_NAME: open-coras
       REGISTRY: ghcr.io/mehal-tech
