@@ -1,14 +1,15 @@
 # open-coras
-A bootc based linux distribution by Mehal Technologies.
+A bootc based linux distribution by [Mehal Technologies](https://mehal.tech).
 
 This distribution is intended for developers interested in investigating gitops in a bootc environment.
 
-Out of the box it supports many [open gitops scenarios](https://docs.mehal.tech/tutorials). 
+Out of the box you can try many [open gitops scenarios](https://docs.mehal.tech/tutorials). 
 
+⚠️⚠️⚠️ THIS IMAGE HAS HARDCODED CREDENTIALS AND IS IS NOT PRODUCTION HARDENED ⚠️⚠️⚠️
 
-If more private repositories and/or complex deployments such as canary releases are required it's suggested you integrate this distribution with [CLOS](https://docs.mehal.tech/clos).
+For a supported production version of this image please visit - [Mehal Technologies](https://docs.mehal.tech/coras)
 
-For a supported version of this image please visit - [Mehal Technologies](https://docs.mehal.tech/coras)
+If you would like to test this distribution with private repositories and/or complex deployments such as canary releases please refer to [clos](https://docs.mehal.tech/clos).
 
 # usage 
 

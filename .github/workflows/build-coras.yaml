@@ -1,4 +1,4 @@
-name: Build F40 bootc image with GHA
+name: Build Coras bootc image
 on:
   workflow_dispatch:
   push:
