@@ -5,18 +5,8 @@ FROM quay.io/fedora/fedora-bootc:41
 ## !!! This image is for test purposes only. !!! 
 ## If you are going into production please contact admin@mehal.tech for a hardened production coras image.
 ## See https://docs.mehal.tech/coras  
-RUN dnf -y install mkpasswd
 RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 thepassword) && useradd -m -G wheel bootcer -p $pass
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
-
-######################################################
-# First boot configuration
-######################################################
-WORKDIR /etc
-COPY first-boot.sh ./
-RUN chmod +x /etc/first-boot.sh 
-COPY first-boot.service /etc/systemd/system
-RUN systemctl enable first-boot.service
 
 ######################################################
 # brog install for OS updates
@@ -44,3 +34,11 @@ COPY quadit.yaml ./
 WORKDIR /usr/share/containers/systemd
 COPY quadit.container ./
 
+######################################################
+# First boot configuration
+######################################################
+WORKDIR /etc
+COPY first-boot.sh ./
+RUN chmod +x /etc/first-boot.sh 
+COPY first-boot.service /etc/systemd/system
+RUN systemctl enable first-boot.service

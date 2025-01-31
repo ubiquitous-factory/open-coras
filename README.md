@@ -5,7 +5,7 @@ This distribution is intended for developers interested in investigating gitops 
 
 Out of the box you can try many [open gitops scenarios](https://docs.mehal.tech/tutorials). 
 
-⚠️⚠️⚠️ THIS IMAGE HAS HARDCODED CREDENTIALS AND IS IS NOT PRODUCTION HARDENED ⚠️⚠️⚠️
+⚠️⚠️⚠️ THIS IMAGE HAS HARDCODED CREDENTIALS AND IS NOT PRODUCTION HARDENED ⚠️⚠️⚠️
 
 For a supported production version of this image please visit - [Mehal Technologies](https://docs.mehal.tech/coras)
 
@@ -19,5 +19,5 @@ Please see https://docs.mehal.tech/coras
 
 The user name and password for this image is `bootcer` with `thepassword`. It's obviously recommended that the `bootcer` user is deleted as part of the downstream build. 
 
-For a more robust security posture consider using the supported coras distribution.
+For a more robust security posture consider using the supported [coras](https://docs.mehal.tech/coras) distribution.
 

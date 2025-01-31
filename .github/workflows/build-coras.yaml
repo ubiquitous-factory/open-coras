@@ -11,6 +11,9 @@ jobs:
   build:
     name: Build bootc image
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./distro
     env:
       IMAGE_NAME: open-coras
       REGISTRY: ghcr.io/mehal-tech
@@ -38,7 +41,7 @@ jobs:
           archs: amd64,ARM64
           oci: true
           containerfiles: |
-            ./distro/Containerfile
+            ./Containerfile
 
       - name: Log in to the GitHub Container registry
         uses: redhat-actions/podman-login@v1
