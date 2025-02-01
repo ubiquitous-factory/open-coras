@@ -1,0 +1,32 @@
+name: Release
+on:
+  workflow_dispatch:
+  push:
+    tags:
+    - '*'
+jobs:
+  build:
+    name: Release ISO Image
+    runs-on: ubuntu-latest
+    steps:
+       - name: install podman
+         uses: gacts/install-podman@v1
+       - name: build iso
+         run: podman run \
+          --rm \
+          -it \
+          --privileged \
+          --pull=newer \
+          --security-opt label=type:unconfined_t \
+          -v /var/lib/containers/storage:/var/lib/containers/storage \
+          -v $(pwd)/output:/output \
+          quay.io/centos-bootc/bootc-image-builder:latest \
+          --type iso \
+          ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        
+       - name: checkout
+         uses: actions/checkout@v3
+       - name: push  
+         uses: ncipollo/release-action@v1
+         with:
+            artifacts: "output/bootiso/install.iso output/manifest.json"

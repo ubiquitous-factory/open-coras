@@ -43,3 +43,6 @@ COPY quadit/quadit.yaml ./
 WORKDIR /usr/share/containers/systemd
 COPY quadit/quadit.container ./
 
+# set user to root for boot process
+USER root
+
