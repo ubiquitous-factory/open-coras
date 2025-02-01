@@ -2,9 +2,8 @@ name: build coras bootc image
 on:
   workflow_dispatch:
   push:
-    paths:
-      - 'distro/**'
-      - '.github/**'
+    paths-ignore:
+      - 'README.md'
     branches:
       - main
 jobs:
