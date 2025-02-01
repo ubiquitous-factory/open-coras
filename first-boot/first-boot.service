@@ -1,6 +1,6 @@
 [Unit]
 Description=Run script on first boot when network is reachable
-ConditionFirstBoot=yes
+# ConditionFirstBoot=yes
 After=network.target
 
 [Service]

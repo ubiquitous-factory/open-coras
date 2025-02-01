@@ -45,7 +45,7 @@ RUN setsebool -P container_manage_cgroup true
 USER bootcer
 WORKDIR /home/bootcer/.quadit
 COPY quadit/quadit.yaml ./
-WORKDIR /usr/share/containers/systemd
+WORKDIR /home/bootcer/.config/containers/systemd/
 COPY quadit/quadit.container ./
 
 # set user to root for boot process
