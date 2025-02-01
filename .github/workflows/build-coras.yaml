@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: open-coras
-      REGISTRY: ghcr.io/mehal-tech
+      REGISTRY: ghcr.io/ubiquitous-factory
     permissions:
       contents: read
       packages: write
