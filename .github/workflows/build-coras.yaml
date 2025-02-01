@@ -40,7 +40,7 @@ jobs:
           archs: amd64,ARM64
           oci: true
           containerfiles: |
-            ./Containerfile
+            /home/runner/work/open-coras/distro/Containerfile
 
       - name: Log in to the GitHub Container registry
         uses: redhat-actions/podman-login@v1
