@@ -16,7 +16,13 @@ If you would like to test this distribution with private repositories and/or com
 
 # usage 
 
-Please see https://docs.mehal.tech/coras
+Install [podman-bootc](https://github.com/containers/podman-bootc?tab=readme-ov-file#streamlining-podman--bootc-interactions)
+```
+
+podman-bootc run  --filesystem xfs ghcr.io/ubiquitous-factory/open-coras:320b2b999a64fd7b8eb07e34be38f972218d611b
+```
+
+For alternatives please see https://docs.mehal.tech/coras
 
 # notes
 
