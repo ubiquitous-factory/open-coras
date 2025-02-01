@@ -3,7 +3,7 @@ FROM ghcr.io/ubiquitous-factory/brog:main as brogbuild
 FROM quay.io/fedora/fedora-bootc:41
 
 ## Install systemd-container for debugging
-RUN dnf install systemd-container 
+RUN dnf -y install systemd-container 
 
 ## !!! This image is for test purposes only. !!! 
 ## If you are going into production please contact admin@mehal.tech for a hardened production coras image.
