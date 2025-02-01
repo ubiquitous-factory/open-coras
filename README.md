@@ -1,9 +1,12 @@
 # open-coras
+
 A bootc based linux distribution by [Mehal Technologies](https://mehal.tech).
 
 This distribution is intended for developers interested in investigating gitops in a bootc environment.
 
-Out of the box you can try many [open gitops scenarios](https://docs.mehal.tech/tutorials). 
+[![Build Coras bootc image](https://github.com/ubiquitous-factory/open-coras/actions/workflows/build-coras.yaml/badge.svg)](https://github.com/ubiquitous-factory/open-coras/actions/workflows/build-coras.yaml)
+
+Out of the box evaluate the [open gitops scenarios](https://docs.mehal.tech/tutorials) and see if this project maps to your requirements. 
 
 ⚠️⚠️⚠️ THIS IMAGE HAS HARDCODED CREDENTIALS AND IS NOT PRODUCTION HARDENED ⚠️⚠️⚠️
 

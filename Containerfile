@@ -9,12 +9,21 @@ RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 thepassword) && useradd -m -G
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
 
 ######################################################
+# First boot configuration
+######################################################
+WORKDIR /etc
+COPY first-boot/first-boot.sh ./
+RUN chmod +x /etc/first-boot.sh 
+COPY first-boot/first-boot.service /etc/systemd/system
+RUN systemctl enable first-boot.service
+
+######################################################
 # brog install for OS updates
 ######################################################
 # Disable auto updates as we are going to use brog
 RUN systemctl disable bootc-fetch-apply-updates.timer
 COPY --from=brogbuild  /brog /usr/bin
-COPY brog.service /etc/systemd/system
+COPY brog/brog.service /etc/systemd/system
 RUN systemctl enable brog.service
 
 ######################################################
@@ -30,15 +39,7 @@ COPY --from=crunbuild /vendor/fedora_41/crun-wasmedge /usr/bin/crun
 RUN setsebool -P container_manage_cgroup true
 USER bootcer
 WORKDIR /home/bootcer/.quadit
-COPY quadit.yaml ./
+COPY quadit/quadit.yaml ./
 WORKDIR /usr/share/containers/systemd
-COPY quadit.container ./
+COPY quadit/quadit.container ./
 
-######################################################
-# First boot configuration
-######################################################
-WORKDIR /etc
-COPY first-boot.sh ./
-RUN chmod +x /etc/first-boot.sh 
-COPY first-boot.service /etc/systemd/system
-RUN systemctl enable first-boot.service
