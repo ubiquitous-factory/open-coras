@@ -12,9 +12,6 @@ jobs:
   build:
     name: Build bootc image
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: /home/runner/work/open-coras/distro
     env:
       IMAGE_NAME: open-coras
       REGISTRY: ghcr.io/mehal-tech
@@ -37,6 +34,7 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
+          working-directory: ./distro
           image: ${{ env.IMAGE_NAME }}
           tags: latest ${{ github.sha }}
           archs: amd64,ARM64
