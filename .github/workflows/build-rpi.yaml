@@ -53,8 +53,6 @@ jobs:
       - name: Generate xz file
         run: |
           sudo podman run \
-          --rm \
-          -it \
           --privileged \
           --pull=newer \
           --security-opt label=type:unconfined_t \
