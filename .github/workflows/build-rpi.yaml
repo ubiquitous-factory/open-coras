@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - '.github/workflows/build-rpi.yaml'
       - 'distro/rpi/Containerfile'
       - 'distro/rpi/on-boot/**'
     branches:
