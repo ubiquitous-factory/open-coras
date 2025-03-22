@@ -66,7 +66,7 @@ jobs:
           --rootfs ext4 \
           ${{ steps.build-image.outputs.image }}:${{ github.sha }}
           xz -v -0 -T0 output/raw/disk.raw
-      - name: release
+      - name: Generate release page
         uses: actions/create-release@v1
         id: create_release
         with:
