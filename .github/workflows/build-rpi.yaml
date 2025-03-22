@@ -37,6 +37,7 @@ jobs:
         with:
           image: ${{ env.IMAGE_NAME }}
           tags: ${{ github.sha }}
+          context: ./distro/rpi/
           archs: ARM64
           oci: true
           containerfiles: |
