@@ -3,9 +3,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'distro/generic/**'
-    paths-ignore:
-      - "**.md"
+      - 'distro/generic/Containerfile'
+      - 'distro/generic/on-boot/**'
     branches:
       - main
 jobs:
@@ -56,3 +55,36 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
+          name: Release ISO Image
+      - name: build iso
+        run: podman run \
+            --rm \
+            -it \
+            --privileged \
+            --pull=newer \
+            --security-opt label=type:unconfined_t \
+            -v /var/lib/containers/storage:/var/lib/containers/storage \
+            -v $(pwd)/output:/output \
+            quay.io/centos-bootc/bootc-image-builder:latest \
+            --type iso \
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}
+          tag_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}
+          body_path: distro/rpi/CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Publish xz file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: output/raw/disk.xz
+          asset_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}.xz
+          asset_content_type: application/gzip

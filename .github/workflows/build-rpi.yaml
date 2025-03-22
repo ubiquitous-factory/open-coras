@@ -3,9 +3,8 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'distro/rpi/**'
-    paths-ignore:
-      - "**.md"
+      - 'distro/rpi/Containerfile'
+      - 'distro/rpi/on-boot/**'
     branches:
       - main
 jobs:
