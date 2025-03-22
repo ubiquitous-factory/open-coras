@@ -1,0 +1,9 @@
+FROM ghcr.io/mehal-tech/amrite:main as crunbuild 
+
+FROM quay.io/fedora/fedora-bootc:41
+
+RUN dnf iwl7260-firmware NetworkManager-wifi podman firewalld bluez bluez-obexd bluez-libs bluez-cups 
+RUN dnf clean all
+COPY --from=crunbuild /vendor/fedora_41/libwasmedge.so.0 /usr/local/lib64/libwasmedge.so.0 
+COPY --from=crunbuild /vendor/fedora_41/crun-wasmedge /usr/bin/crun
+

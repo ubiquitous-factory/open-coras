@@ -1,0 +1,58 @@
+name: Build F41 amd64 arm64
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'distro/generic/**'
+    paths-ignore:
+      - "**.md"
+    branches:
+      - main
+jobs:
+ 
+  build:
+    name: Build bootc image
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: open-coras
+      REGISTRY: ghcr.io/mehal-tech
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Delete huge unnecessary tools folder
+        run: rm -rf /opt/hostedtoolcache
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      - name: Use buildah bud to create the image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: latest ${{ github.sha }}
+          archs: amd64,ARM64
+          oci: true
+          containerfiles: |
+            ./distro/generic/Containerfile
+
+      - name: Log in to the GitHub Container registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to GitHub Container Repository
+        id: push-to-ghcr
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ${{ env.REGISTRY }}

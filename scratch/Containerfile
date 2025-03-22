@@ -14,13 +14,13 @@ RUN pass=$(mkpasswd --method=SHA-512 --rounds=4096 thepassword) && useradd -m -G
 RUN echo "%wheel        ALL=(ALL)       NOPASSWD: ALL" > /etc/sudoers.d/wheel-sudo
 
 ######################################################
-# First boot configuration
+# on boot configuration
 ######################################################
 WORKDIR /etc
-COPY first-boot/first-boot.sh ./
-RUN chmod +x /etc/first-boot.sh 
-COPY first-boot/first-boot.service /etc/systemd/system
-RUN systemctl enable first-boot.service
+COPY on-boot/on-boot.sh ./
+RUN chmod +x /etc/on-boot.sh 
+COPY on-boot/on-boot.service /etc/systemd/system
+RUN systemctl enable on-boot.service
 
 ######################################################
 # brog install for OS updates

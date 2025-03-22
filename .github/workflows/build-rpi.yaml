@@ -1,0 +1,94 @@
+name: Build RPi
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'distro/rpi/**'
+    paths-ignore:
+      - "**.md"
+    branches:
+      - main
+jobs:
+ 
+  build:
+    name: Build bootc image
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_NAME: open-coras-rpi
+      REGISTRY: ghcr.io/ubiquitous-factory
+    permissions:
+      contents: read
+      packages: write
+      attestations: write
+      id-token: write
+    steps:
+      - name: Delete huge unnecessary tools folder
+        run: rm -rf /opt/hostedtoolcache
+      - name: Install qemu dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y qemu-user-static
+      - name: Clone the repository
+        uses: actions/checkout@v4
+
+      - name: Use buildah bud to create the image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: ${{ github.sha }}
+          archs: ARM64
+          oci: true
+          containerfiles: |
+            ./distro/rpi/Containerfile
+
+      - name: Log in to the GitHub Container registry
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate xz file
+        run: |
+          sudo podman run \
+          --rm \
+          -it \
+          --privileged \
+          --pull=newer \
+          --security-opt label=type:unconfined_t \
+          -v $(pwd)/output:/output \
+          -v /var/lib/containers/storage:/var/lib/containers/storage \
+          quay.io/centos-bootc/bootc-image-builder:latest \
+          --type raw \
+          --local \
+          --rootfs ext4 \
+          ${{ steps.build-image.outputs.image }}:${{ github.sha }}
+          xz -v -0 -T0 output/raw/disk.raw
+      - name: release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}
+          tag_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}
+          body_path: distro/rpi/CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - name: Publish xz file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: output/raw/disk.xz
+          asset_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}.xz
+          asset_content_type: application/gzip
+      - name: Push to GitHub Container Repository
+        id: push-to-ghcr
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: release-${{ github.sha }}
+          registry: ${{ env.REGISTRY }}

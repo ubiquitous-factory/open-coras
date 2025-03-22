@@ -1,0 +1,33 @@
+FROM ghcr.io/ubiquitous-factory/amrite:main as crunbuild 
+FROM ghcr.io/ubiquitous-factory/brog:main as brogbuild 
+
+FROM quay.io/fedora/fedora-bootc:41
+
+# bootupd currently does not support Raspberry Pi-specific firmware and bootloader files.
+# This shim script copies the firmware and bootloader files to the correct location before
+# calling the original bootupctl script.
+# This is a temporary workaround until https://github.com/coreos/bootupd/issues/651 is resolved.
+RUN dnf install -y bcm283x-firmware bcm283x-overlays uboot-images-armv8 && \
+    cp -P /usr/share/uboot/rpi_arm64/u-boot.bin /boot/efi/rpi-u-boot.bin && \
+    mkdir -p /usr/lib/bootc-raspi-firmwares && \
+    cp -a /boot/efi/. /usr/lib/bootc-raspi-firmwares/ && \
+    dnf remove -y bcm283x-firmware uboot-images-armv8 && \
+    mkdir /usr/bin/bootupctl-orig && \
+    mv /usr/bin/bootupctl /usr/bin/bootupctl-orig/ && \
+    dnf clean all
+
+# mkdir -p /tmp/efi/boot/efi
+# dnf install -y --downloadonly --release=$RELEASE --forcearch=aarch64 --destdir=/tmp/efi/ uboot-images-armv8 bcm283x-firmware bcm283x-overlays
+# for rpm in /tmp/efi/*rpm; do rpm2cpio $rpm | cpio -idv -D /tmp/efi/; done
+# mv /tmp/efi/usr/share/uboot/rpi_arm64/u-boot.bin /tmp/efi/boot/efi/rpi-u-boot.bin
+
+# Once you have that script ready to go, simply make a directory called tmp in your working directory place the script in it. Next, we’ll run this to grab the files:
+
+# podman run -ti --rm -v $(pwd)/tmp:/tmp fedora-bootc /tmp/fetch_efi.sh
+
+
+COPY bootupctl-shim /usr/bin/bootupctl
+
+COPY --from=crunbuild /vendor/fedora_41/libwasmedge.so.0 /usr/local/lib64/libwasmedge.so.0 
+COPY --from=crunbuild /vendor/fedora_41/crun-wasmedge /usr/bin/crun
+COPY --from=brogbuild /vendor/fedora_41/brog /usr/bin/brog
