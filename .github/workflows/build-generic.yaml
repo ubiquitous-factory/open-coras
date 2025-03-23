@@ -85,7 +85,7 @@ jobs:
           body_path: distro/generic/CHANGELOG.md
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - name: Publish xz file
+      - name: Publish iso file
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
