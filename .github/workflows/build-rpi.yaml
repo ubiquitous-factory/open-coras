@@ -15,7 +15,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: open-coras-rpi
-      REGISTRY: ghcr.io/ubiquitous-factory
+      REGISTRY: ghcr.io
+      NAMESPACE: ubiquitous-factory
     permissions:
       contents: read
       packages: write
@@ -50,21 +51,30 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      
+      - name: Push to GitHub Container Repository
+        id: push-to-ghcr
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{env.NAMESPACE}}/${{ steps.build-image.outputs.image }}
+          tags: release-${{ github.sha }}
+          registry: ${{ env.REGISTRY }}
       - name: Generate xz file
         run: |
-          mkdir output
-          sudo podman run \
-          --privileged \
-          --pull=newer \
-          --security-opt label=type:unconfined_t \
-          -v $(pwd)/output:/output \
-          -v /var/lib/containers/storage:/var/lib/containers/storage \
-          quay.io/centos-bootc/bootc-image-builder:latest \
-          --type raw \
-          --local \
-          --rootfs ext4 \
-          ${{ steps.build-image.outputs.image }}:${{ github.sha }}
-          xz -v -0 -T0 output/raw/disk.raw
+            mkdir output
+            sudo podman pull ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{ steps.build-image.outputs.image }}:${{ github.sha }}
+            sudo podman run \
+            --privileged \
+            --pull=newer \
+            --security-opt label=type:unconfined_t \
+            -v $(pwd)/output:/output \
+            -v /var/lib/containers/storage:/var/lib/containers/storage \
+            quay.io/centos-bootc/bootc-image-builder:latest \
+            --type raw \
+            --local \
+            --rootfs ext4 \
+            ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{ steps.build-image.outputs.image }}:${{ github.sha }}
+            xz -v -0 -T0 output/raw/disk.raw
       - name: Generate release page
         uses: actions/create-release@v1
         id: create_release
@@ -85,10 +95,3 @@ jobs:
           asset_path: output/raw/disk.xz
           asset_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}.xz
           asset_content_type: application/gzip
-      - name: Push to GitHub Container Repository
-        id: push-to-ghcr
-        uses: redhat-actions/push-to-registry@v2
-        with:
-          image: ${{ steps.build-image.outputs.image }}
-          tags: release-${{ github.sha }}
-          registry: ${{ env.REGISTRY }}
