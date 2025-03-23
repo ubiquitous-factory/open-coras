@@ -20,8 +20,8 @@ COPY --from=crunbuild /vendor/fedora_41/crun-wasmedge /usr/bin/crun
 RUN systemctl disable bootc-fetch-apply-updates.timer
 COPY --from=brogbuild  /vendor/fedora_41/brog /usr/bin
 
-COPY <<"EOT" /usr/lib/systemd/system/brog.service
-[Unit]
+RUN cat <<EOF > /usr/lib/systemd/system/brog.service
+[Unit] 
 Description=A bootc management service
 After=network.target
 
@@ -35,7 +35,7 @@ Environment=SCHEDULE="every 120 seconds"
 
 [Install]
 WantedBy=default.target
-EOT
+EOF
 
 # Enable the service
 # We prefer using systemctl over a manual symlink 

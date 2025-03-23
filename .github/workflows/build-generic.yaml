@@ -1,4 +1,4 @@
-name: Build F41 amd64 arm64
+name: Build F41 amd64
 on:
   workflow_dispatch:
   push:
