@@ -52,6 +52,7 @@ jobs:
 
       - name: Generate xz file
         run: |
+          mkdir output
           sudo podman run \
           --privileged \
           --pull=newer \
