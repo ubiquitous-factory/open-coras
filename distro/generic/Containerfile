@@ -18,9 +18,7 @@ COPY --from=crunbuild /vendor/fedora_41/crun-wasmedge /usr/bin/crun
 ######################################################
 # Disable auto updates as we are going to use brog
 RUN systemctl disable bootc-fetch-apply-updates.timer
-COPY --from=brogbuild  /brog /usr/bin
-RUN systemctl disable bootc-fetch-apply-updates.timer
-COPY --from=brogbuild /vendor/fedora_41/brog /usr/bin/brog
+COPY --from=brogbuild  /vendor/fedora_41/brog /usr/bin
 
 COPY <<"EOT" /usr/lib/systemd/system/brog.service
 [Unit]
