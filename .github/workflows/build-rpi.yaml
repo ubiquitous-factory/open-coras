@@ -37,9 +37,9 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}
-          tags:  ${{ github.sha }}
+          tags:  ${{ github.sha }} latest
           context: ./distro/rpi/
-          archs: ARM64
+          archs: arm64
           oci: true
           containerfiles: |
             ./distro/rpi/Containerfile
@@ -59,31 +59,31 @@ jobs:
           image: ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}
           tags: ${{ github.sha }}
           registry: ${{ env.REGISTRY }}
-      - name: Make output
-        run: mkdir output
-      - name: Pull Image
-        run: sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
-      - name: Generate raw file
-        run: sudo podman run --arch arm64 --privileged --pull=newer --security-opt label=type:unconfined_t -v $(pwd)/output:/output -v /var/lib/containers/storage:/var/lib/containers/storage quay.io/centos-bootc/bootc-image-builder:latest --type raw --rootfs ext4 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{ github.sha }}
-      - name: Generate xz file 
-        run: xz -v -0 -T0 output/raw/disk.raw      
-      - name: Generate release page
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}
-          tag_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}
-          body_path: distro/rpi/CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Publish xz file
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: output/raw/disk.xz
-          asset_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}.xz
-          asset_content_type: application/gzip
+      # - name: Make output
+      #   run: mkdir output
+      # - name: Pull Image
+      #   run: sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
+      # - name: Generate raw file
+      #   run: sudo podman run --arch arm64 --privileged --pull=newer --security-opt label=type:unconfined_t -v $(pwd)/output:/output -v /var/lib/containers/storage:/var/lib/containers/storage quay.io/centos-bootc/bootc-image-builder:latest --type raw --rootfs ext4 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{ github.sha }}
+      # - name: Generate xz file 
+      #   run: xz -v -0 -T0 output/raw/disk.raw      
+      # - name: Generate release page
+      #   uses: actions/create-release@v1
+      #   id: create_release
+      #   with:
+      #     draft: false
+      #     prerelease: false
+      #     release_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}
+      #     tag_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}
+      #     body_path: distro/rpi/CHANGELOG.md
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      # - name: Publish xz file
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: output/raw/disk.xz
+      #     asset_name: ${{ env.IMAGE_NAME }}-${{ github.sha }}.xz
+      #     asset_content_type: application/gzip

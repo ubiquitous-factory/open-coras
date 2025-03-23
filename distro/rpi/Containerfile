@@ -16,18 +16,23 @@ RUN dnf install -y bcm283x-firmware bcm283x-overlays uboot-images-armv8 && \
     mv /usr/bin/bootupctl /usr/bin/bootupctl-orig/ && \
     dnf clean all
 
-# mkdir -p /tmp/efi/boot/efi
-# dnf install -y --downloadonly --release=$RELEASE --forcearch=aarch64 --destdir=/tmp/efi/ uboot-images-armv8 bcm283x-firmware bcm283x-overlays
-# for rpm in /tmp/efi/*rpm; do rpm2cpio $rpm | cpio -idv -D /tmp/efi/; done
-# mv /tmp/efi/usr/share/uboot/rpi_arm64/u-boot.bin /tmp/efi/boot/efi/rpi-u-boot.bin
-
-# Once you have that script ready to go, simply make a directory called tmp in your working directory place the script in it. Next, we’ll run this to grab the files:
-
-# podman run -ti --rm -v $(pwd)/tmp:/tmp fedora-bootc /tmp/fetch_efi.sh
-
 
 COPY bootupctl-shim /usr/bin/bootupctl
 
+######################################################
+# amrite install for wasi support
+######################################################
 COPY --from=crunbuild /vendor/fedora_41/libwasmedge.so.0 /usr/local/lib64/libwasmedge.so.0 
 COPY --from=crunbuild /vendor/fedora_41/crun-wasmedge /usr/bin/crun
-COPY --from=brogbuild /vendor/fedora_41/brog /usr/bin/brog
+
+######################################################
+# brog install for OS updates
+######################################################
+# Disable auto updates as we are going to use brog
+RUN systemctl disable bootc-fetch-apply-updates.timer
+COPY --from=brogbuild  /vendor/fedora_41/brog /usr/bin
+COPY brog.service /etc/systemd/system
+
+# Enable the service
+RUN mkdir -p /etc/systemd/system/default.target.wants
+RUN ln -s /etc/systemd/system/brog.service /etc/systemd/system/default.target.wants/brog.service

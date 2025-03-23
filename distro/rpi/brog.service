@@ -1,0 +1,14 @@
+[Unit] 
+Description=A bootc management service
+After=network.target
+
+[Service]
+Type=simple
+RemainAfterExit=yes
+ExecStart=/usr/bin/brog
+TimeoutStartSec=0
+Environment=ENDPOINT=https://global.mehal.tech/gitops/project/config
+Environment=SCHEDULE="every 120 seconds"
+
+[Install]
+WantedBy=default.target

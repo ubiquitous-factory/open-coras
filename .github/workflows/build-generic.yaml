@@ -1,4 +1,4 @@
-name: Build F41 amd64
+name: Build Generic F41 amd64 arm64 
 on:
   workflow_dispatch:
   push:
@@ -37,8 +37,8 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{env.NAMESPACE}}/${{ env.IMAGE_NAME }}
-          tags: ${{ github.sha }}
-          archs: amd64
+          tags: ${{ github.sha }} latest
+          archs: amd64, arm64
           oci: true
           context: ./distro/generic 
           containerfiles: |
@@ -58,41 +58,41 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
           tags: ${{ steps.build-image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
-          name: Release ISO Image
-      - name: Make output
-        run: mkdir output
-      - name: Pull Image
-        run: sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
-      - name: build iso
-        run: sudo podman run --privileged --pull=newer --security-opt label=type:unconfined_t -v /var/lib/containers/storage:/var/lib/containers/storage -v $(pwd)/output:/output quay.io/centos-bootc/bootc-image-builder:latest --type iso ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
-      - name: release
-        uses: actions/create-release@v1
-        id: create_release
-        with:
-          draft: false
-          prerelease: false
-          release_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}
-          tag_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}
-          body_path: distro/generic/CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: ls output
-        run: ls output/bootiso
-      - name: Publish iso file
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: output/bootiso/install.iso
-          asset_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}.iso
-          asset_content_type: application/gzip
-      - name: Publish manifest file
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: output/manifest-iso.json
-          asset_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}-manifest-iso.json
-          asset_content_type: application/json
+      #  name: Release ISO Image
+      # - name: Make output
+      #   run: mkdir output
+      # - name: Pull Image
+      #   run: sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
+      # - name: build iso
+      #   run: sudo podman run --privileged --pull=newer --security-opt label=type:unconfined_t -v /var/lib/containers/storage:/var/lib/containers/storage -v $(pwd)/output:/output quay.io/centos-bootc/bootc-image-builder:latest --type iso ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
+      # - name: release
+      #   uses: actions/create-release@v1
+      #   id: create_release
+      #   with:
+      #     draft: false
+      #     prerelease: false
+      #     release_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}
+      #     tag_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}
+      #     body_path: distro/generic/CHANGELOG.md
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      # - name: ls output
+      #   run: ls output/bootiso
+      # - name: Publish iso file
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: output/bootiso/install.iso
+      #     asset_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}.iso
+      #     asset_content_type: application/gzip
+      # - name: Publish manifest file
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: output/manifest-iso.json
+      #     asset_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}-manifest-iso.json
+      #     asset_content_type: application/json
