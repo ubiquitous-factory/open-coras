@@ -64,16 +64,7 @@ jobs:
       - name: Pull Image
         run: sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
       - name: build iso
-        run: |
-            sudo podman run \
-            --privileged \
-            --pull=newer \
-            --security-opt label=type:unconfined_t \
-            -v /var/lib/containers/storage:/var/lib/containers/storage \
-            -v $(pwd)/output:/output \
-            quay.io/centos-bootc/bootc-image-builder:latest \
-            --type iso \
-            ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
+        run: sudo podman run --privileged --pull=newer --security-opt label=type:unconfined_t -v /var/lib/containers/storage:/var/lib/containers/storage -v $(pwd)/output:/output quay.io/centos-bootc/bootc-image-builder:latest --type iso ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
       - name: release
         uses: actions/create-release@v1
         id: create_release
