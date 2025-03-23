@@ -59,7 +59,11 @@ jobs:
           image: ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}
           tags: ${{ github.sha }}
           registry: ${{ env.REGISTRY }}
-      - name: Generate xz file
+      - name: Make output
+        run: mkdir output
+      - name: Pull Image
+        run: sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
+      - name: Generate raw file
         run: |
             mkdir output
             sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
@@ -75,7 +79,8 @@ jobs:
             --local \
             --rootfs ext4 \
             ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{ github.sha }}
-            xz -v -0 -T0 output/raw/disk.raw
+      - name: Generate xz file 
+        run: xz -v -0 -T0 output/raw/disk.raw      
       - name: Generate release page
         uses: actions/create-release@v1
         id: create_release

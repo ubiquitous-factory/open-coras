@@ -19,24 +19,7 @@ COPY --from=crunbuild /vendor/fedora_41/crun-wasmedge /usr/bin/crun
 # Disable auto updates as we are going to use brog
 RUN systemctl disable bootc-fetch-apply-updates.timer
 COPY --from=brogbuild  /vendor/fedora_41/brog /usr/bin
-
-RUN cat <<EOF > /usr/lib/systemd/system/brog.service
-[Unit] 
-Description=A bootc management service
-After=network.target
-
-[Service]
-Type=simple
-RemainAfterExit=yes
-ExecStart=/usr/bin/brog
-TimeoutStartSec=0
-Environment=ENDPOINT=https://global.mehal.tech/gitops/project/config
-Environment=SCHEDULE="every 120 seconds"
-
-[Install]
-WantedBy=default.target
-EOF
+COPY brog.service /etc/systemd/system
 
 # Enable the service
-# We prefer using systemctl over a manual symlink 
-RUN systemctl enable brog.service
+RUN ln -s /etc/systemd/system/brog.service /etc/systemd/system/default.target.wants/brog.service
