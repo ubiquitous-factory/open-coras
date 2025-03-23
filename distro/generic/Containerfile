@@ -22,4 +22,5 @@ COPY --from=brogbuild  /vendor/fedora_41/brog /usr/bin
 COPY brog.service /etc/systemd/system
 
 # Enable the service
+RUN mkdir -p /etc/systemd/system/default.target.wants
 RUN ln -s /etc/systemd/system/brog.service /etc/systemd/system/default.target.wants/brog.service
