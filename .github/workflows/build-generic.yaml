@@ -77,13 +77,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: ls output
-        run: ls output 
+        run: ls output/bootiso
       - name: Publish iso file
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: output/iso/install.iso
+          asset_path: output/bootiso/install.iso
           asset_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}.iso
           asset_content_type: application/gzip
+      - name: Publish manifest file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: output/manifest-iso.json
+          asset_name: amd64-${{ env.IMAGE_NAME }}-${{ github.sha }}-manifest-iso.json
+          asset_content_type: application/json
