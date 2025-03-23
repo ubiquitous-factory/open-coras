@@ -37,7 +37,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{ env.IMAGE_NAME }}
-          tags: ${{ github.sha }}
+          tags:  ${{ github.sha }}
           context: ./distro/rpi/
           archs: ARM64
           oci: true
@@ -57,7 +57,7 @@ jobs:
         uses: redhat-actions/push-to-registry@v2
         with:
           image: ${{env.NAMESPACE}}/${{ steps.build-image.outputs.image }}
-          tags: release-${{ github.sha }}
+          tags: ${{ github.sha }}
           registry: ${{ env.REGISTRY }}
       - name: Generate xz file
         run: |
