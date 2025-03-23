@@ -1,5 +1,5 @@
-FROM ghcr.io/mehal-tech/amrite:main as crunbuild 
-FROM ghcr.io/mehal-tech/brog:main as brogbuild 
+FROM ghcr.io/ubiquitous-factory/amrite:main as crunbuild 
+FROM ghcr.io/ubiquitous-factory/brog:main as brogbuild 
 
 FROM quay.io/fedora/fedora-bootc:41
 
