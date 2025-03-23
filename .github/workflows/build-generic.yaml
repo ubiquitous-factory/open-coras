@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
+      - '.github/workflows/build-generic.yaml'
       - 'distro/generic/Containerfile'
       - 'distro/generic/on-boot/**'
     branches:

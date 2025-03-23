@@ -36,7 +36,7 @@ jobs:
         id: build-image
         uses: redhat-actions/buildah-build@v2
         with:
-          image: ${{ env.IMAGE_NAME }}
+          image: ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}
           tags:  ${{ github.sha }}
           context: ./distro/rpi/
           archs: ARM64
@@ -56,13 +56,13 @@ jobs:
         id: push-to-ghcr
         uses: redhat-actions/push-to-registry@v2
         with:
-          image: ${{env.NAMESPACE}}/${{ steps.build-image.outputs.image }}
+          image: ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}
           tags: ${{ github.sha }}
           registry: ${{ env.REGISTRY }}
       - name: Generate xz file
         run: |
             mkdir output
-            sudo podman pull ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{ steps.build-image.outputs.image }}:${{ github.sha }}
+            sudo podman pull ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
             sudo podman run \
             --privileged \
             --pull=newer \
