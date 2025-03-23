@@ -62,9 +62,7 @@ jobs:
       - name: build iso
         run: |
             mkdir output  
-            podman run \
-            --rm \
-            -it \
+            sudo podman run \
             --privileged \
             --pull=newer \
             --security-opt label=type:unconfined_t \
