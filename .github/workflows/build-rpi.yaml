@@ -65,8 +65,6 @@ jobs:
         run: sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
       - name: Generate raw file
         run: |
-            mkdir output
-            sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
             sudo podman run \
             --arch arm64
             --privileged \

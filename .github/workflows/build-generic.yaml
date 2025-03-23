@@ -37,7 +37,7 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           image: ${{env.NAMESPACE}}/${{ env.IMAGE_NAME }}
-          tags: latest ${{ github.sha }}
+          tags: ${{ github.sha }}
           archs: amd64
           oci: true
           context: ./distro/generic 
@@ -59,6 +59,10 @@ jobs:
           tags: ${{ steps.build-image.outputs.tags }}
           registry: ${{ env.REGISTRY }}
           name: Release ISO Image
+      - name: Make output
+        run: mkdir output
+      - name: Pull Image
+        run: sudo podman pull --arch arm64 ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
       - name: build iso
         run: |
             mkdir output  
@@ -70,7 +74,7 @@ jobs:
             -v $(pwd)/output:/output \
             quay.io/centos-bootc/bootc-image-builder:latest \
             --type iso \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{env.NAMESPACE}}/${{env.IMAGE_NAME}}:${{github.sha}}
       - name: release
         uses: actions/create-release@v1
         id: create_release
